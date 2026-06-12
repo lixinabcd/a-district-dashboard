@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A区 6.1-6.11 运营数据看板</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #f0f2f5; color: #1a1a1a; padding: 32px 24px;
+}
+.header { max-width: 1200px; margin: 0 auto 32px; }
+.header h1 { font-size: 26px; font-weight: 700; }
+.header .sub { color: #888; font-size: 14px; margin-top: 4px; }
+
+.container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 36px; }
+
+.section {
+  background: #fff; border-radius: 16px; padding: 28px 32px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.section-title {
+  font-size: 20px; font-weight: 700; margin-bottom: 20px;
+  padding-bottom: 12px; border-bottom: 2px solid #e8e8e8;
+}
+
+/* 指标卡 */
+.metrics { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 28px; }
+@media (max-width: 700px) { .metrics { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 480px) { .metrics { grid-template-columns: repeat(2, 1fr); } }
+.mcard { padding: 16px; border-radius: 12px; border: 1px solid #e8e8e8; }
+.mcard .mlabel { font-size: 13px; color: #888; font-weight: 500; }
+.mcard .mval { font-size: 26px; font-weight: 700; margin-top: 4px; color: #1a1a1a; }
+.mcard:nth-child(1) { background: #fff7e6; }
+.mcard:nth-child(2) { background: #e6fffb; }
+.mcard:nth-child(3) { background: #f5f0ff; }
+.mcard:nth-child(4) { background: #fff0f6; }
+.mcard:nth-child(5) { background: #e6f7ff; }
+
+/* 排行标题 */
+.rank-title {
+  font-size: 16px; font-weight: 700; margin: 24px 0 12px;
+  padding-left: 12px; border-left: 3px solid #a3e635;
+}
+
+/* 图表+排行榜双栏 */
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+@media (max-width: 960px) { .charts-row { grid-template-columns: 1fr; } }
+.chart-box { position: relative; height: 280px; min-height: 200px; }
+.chart-box h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #666; }
+
+/* 排行榜列表 */
+.rank-list { display: flex; flex-direction: column; gap: 6px; }
+.ritem {
+  display: grid;
+  grid-template-columns: 28px 36px 1fr auto auto auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  transition: all 0.15s;
+}
+.ritem:hover { background: #fafafa; }
+.rn {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; background: #f0f0f0; flex-shrink: 0;
+}
+.rn.gold { background: #fbbf24; color: #000; }
+.rn.silver { background: #d1d5db; color: #000; }
+.rn.bronze { background: #d97706; color: #fff; }
+.av {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: #a3e635; display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700; color: #000; flex-shrink: 0;
+}
+.nm { font-weight: 600; font-size: 14px; white-space: nowrap; }
+.col-play { font-weight: 700; font-size: 14px; text-align: right; white-space: nowrap; }
+.col-stat { font-size: 12px; color: #999; text-align: right; white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>A区 · 6.1 - 6.11 运营数据看板</h1>
+  <div class="sub">数据范围：2026-06-01 至 2026-06-11</div>
+</div>
+
+<div class="container" id="app"></div>
+
+<script>
+var DATA = [{"label": "数字人视频类", "person_count": 2, "persons": [["庄惜婷", {"play": 8.7, "pub": 305, "over5k": 3, "opct": 0.98, "us": 96}], ["王春燕", {"play": 4.1, "pub": 735, "over5k": 2, "opct": 0.27, "us": 96}]], "writers": [["刘信良", {"play": 8.1, "pub": 183, "over5k": 2, "opct": 1.09}], ["林秋利", {"play": 4.1, "pub": 544, "over5k": 2, "opct": 0.37}], ["何嘉玲", {"play": 0.6, "pub": 313, "over5k": 1, "opct": 0.32}]], "total_play": 12.8, "total_pub": 1040, "total_over5k": 5}, {"label": "测评图文类", "person_count": 3, "persons": [["吴丽贞", {"play": 26.4, "pub": 1596, "over5k": 20, "opct": 1.25, "us": 70}], ["蔡晓雪", {"play": 6.6, "pub": 1452, "over5k": 9, "opct": 0.62, "us": 37}], ["庄惜婷", {"play": 0.5, "pub": 904, "over5k": 1, "opct": 0.11, "us": 6}]], "writers": [["桂环", {"play": 33.5, "pub": 3952, "over5k": 30, "opct": 0.76}]], "total_play": 33.5, "total_pub": 3952, "total_over5k": 30}];
+
+function fmt(n) {
+  if (typeof n !== 'number') return n;
+  if (Number.isInteger(n)) return n.toLocaleString();
+  return n.toFixed(1);
+}
+
+function metricCards(d) {
+  var pct = d.total_pub > 0 ? (d.total_over5k / d.total_pub * 100).toFixed(1) : '0.0';
+  return '<div class="metrics">' +
+    '<div class="mcard"><div class="mlabel">播放量（万）</div><div class="mval">' + fmt(d.total_play) + '</div></div>' +
+    '<div class="mcard"><div class="mlabel">发布条数</div><div class="mval">' + fmt(d.total_pub) + '</div></div>' +
+    '<div class="mcard"><div class="mlabel">过5K条数</div><div class="mval">' + fmt(d.total_over5k) + '</div></div>' +
+    '<div class="mcard"><div class="mlabel">上5K占比</div><div class="mval">' + pct + '%</div></div>' +
+    '<div class="mcard"><div class="mlabel">运营人数</div><div class="mval">' + d.person_count + '</div></div>' +
+    '</div>';
+}
+
+function rankRow(item, i, showUs) {
+  var medal = i === 0 ? ' gold' : i === 1 ? ' silver' : i === 2 ? ' bronze' : '';
+  var name = item[0], d = item[1];
+  var stats = '发布' + d.pub + ' · 过5K' + d.over5k + ' · ' + d.opct + '%';
+  if (showUs && d.us !== undefined) stats += ' · 美占' + d.us + '%';
+  return '<div class="ritem">' +
+    '<div class="rn' + medal + '">' + (i+1) + '</div>' +
+    '<div class="av">' + name.charAt(0) + '</div>' +
+    '<div class="nm">' + name + '</div>' +
+    '<div class="col-play">' + fmt(d.play) + '万</div>' +
+    '<div class="col-stat">' + stats + '</div>' +
+    '</div>';
+}
+
+function renderSection(d, idx) {
+  var html = '<div class="section">';
+  html += '<div class="section-title">' + d.label + '</div>';
+  html += metricCards(d);
+  html += '<div class="rank-title">运营播放量排行</div>';
+  html += '<div class="charts-row">';
+  html += '<div class="chart-box"><h3>播放量对比（万）</h3><canvas id="ch' + idx + 'p"></canvas></div>';
+  html += '<div class="rank-list">';
+  for (var i = 0; i < d.persons.length; i++) html += rankRow(d.persons[i], i, true);
+  html += '</div></div>';
+  html += '<div class="rank-title">文案播放量排行</div>';
+  html += '<div class="charts-row">';
+  html += '<div class="chart-box"><h3>播放量对比（万）</h3><canvas id="ch' + idx + 'w"></canvas></div>';
+  html += '<div class="rank-list">';
+  for (var i = 0; i < d.writers.length; i++) html += rankRow(d.writers[i], i, false);
+  html += '</div></div></div>';
+  return html;
+}
+
+var app = document.getElementById('app');
+for (var i = 0; i < DATA.length; i++) {
+  app.insertAdjacentHTML('beforeend', renderSection(DATA[i], i));
+}
+
+var COLORS = ['#a3e635','#fbbf24','#f472b6','#60a5fa','#a78bfa','#34d399','#fb923c'];
+
+function makeChart(id, items, key) {
+  var canvas = document.getElementById(id);
+  if (!canvas) return;
+  var sorted = items.slice().sort(function(a,b){return b[1][key]-a[1][key]});
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: sorted.map(function(x){return x[0]}),
+      datasets: [{
+        data: sorted.map(function(x){return x[1][key]}),
+        backgroundColor: COLORS.slice(0, sorted.length),
+        borderColor: '#000',
+        borderWidth: 1,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: '#e8e8e8' },
+          ticks: { callback: function(v){return v+'万'} }
+        },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+makeChart('ch0p', DATA[0].persons, 'play');
+makeChart('ch0w', DATA[0].writers, 'play');
+makeChart('ch1p', DATA[1].persons, 'play');
+makeChart('ch1w', DATA[1].writers, 'play');
+</script>
+</body>
+</html>
