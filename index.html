@@ -13,7 +13,6 @@ h1 { font-size:26px; font-weight:700; margin-bottom:4px; }
 .subtitle { color:#888; font-size:14px; margin-bottom:32px; }
 .section { background:#fff; border-radius:16px; padding:28px 32px; box-shadow:0 2px 12px rgba(0,0,0,0.06); margin-bottom:24px; }
 .section-title { font-size:20px; font-weight:700; padding-bottom:12px; margin-bottom:24px; border-bottom:2px solid #e8e8e8; }
-
 .card-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:28px; }
 @media (max-width:700px) { .card-grid { grid-template-columns:repeat(3,1fr); } }
 @media (max-width:480px) { .card-grid { grid-template-columns:repeat(2,1fr); } }
@@ -25,13 +24,11 @@ h1 { font-size:26px; font-weight:700; margin-bottom:4px; }
 .card:nth-child(3) { background:#f5f0ff; }
 .card:nth-child(4) { background:#fff0f6; }
 .card:nth-child(5) { background:#e6f7ff; }
-
 .rank-title { font-size:16px; font-weight:700; margin:24px 0 12px; padding-left:12px; border-left:3px solid #a3e635; }
 .chart-row { display:grid; grid-template-columns:1fr 1fr; gap:28px; }
 @media (max-width:960px) { .chart-row { grid-template-columns:1fr; } }
 .chart-box { position:relative; height:280px; }
 .chart-box h3 { font-size:14px; font-weight:600; margin-bottom:8px; color:#666; }
-
 .rank-list { display:flex; flex-direction:column; gap:4px; }
 .ritem { display:grid; grid-template-columns:28px 36px 1fr auto auto; gap:8px; align-items:center; padding:10px 14px; border:1px solid #eee; border-radius:10px; }
 .ritem:hover { background:#fafafa; }
@@ -53,27 +50,28 @@ h1 { font-size:26px; font-weight:700; margin-bottom:4px; }
     <div class="section-title">A区综合</div>
     <div class="card-grid">
       <div class="card"><div class="card-label">播放量（万）</div><div class="card-value">68.4</div></div>
-      <div class="card"><div class="card-label">发布条数</div><div class="card-value">6576</div></div>
+      <div class="card"><div class="card-label">发布条数</div><div class="card-value">6,576</div></div>
       <div class="card"><div class="card-label">过5K条数</div><div class="card-value">55</div></div>
       <div class="card"><div class="card-label">上5K占比</div><div class="card-value">0.8%</div></div>
-      <div class="card"><div class="card-label">美国占比（均）</div><div class="card-value">69.2%</div></div>
+      <div class="card"><div class="card-label">美国占比（均）</div><div class="card-value">65.1%</div></div>
     </div>
   </div>
   <div id="app"></div>
 </div>
 <script>
-var DATA = {"数字人": [{"运营名字": "庄惜婷", "播放量": 16.2, "发布条数": 500.0, "上5K条数": 6, "美国占比": 0.01, "上5K占比": 1.2}, {"运营名字": "王春燕", "播放量": 6.1, "发布条数": 920.0, "上5K条数": 3, "美国占比": 0.0, "上5K占比": 0.3}], "测评图文": [{"运营名字": "吴丽贞", "播放量": 34.8, "发布条数": 2091.0, "上5K条数": 31, "美国占比": 0.02, "上5K占比": 1.5}, {"运营名字": "蔡晓雪", "播放量": 8.6, "发布条数": 1934.0, "上5K条数": 11, "美国占比": 0.0, "上5K占比": 0.6}, {"运营名字": "庄惜婷", "播放量": 2.7, "发布条数": 1127.0, "上5K条数": 4, "美国占比": 0.0, "上5K占比": 0.4}]};
+var DATA = {"数字人": [{"运营名字": "庄惜婷", "播放量": 16.2, "发布条数": 500.0, "上5K条数": 6, "美国占比": 0.964, "上5K占比": 1.2}, {"运营名字": "王春燕", "播放量": 6.1, "发布条数": 920.0, "上5K条数": 3, "美国占比": 0.964, "上5K占比": 0.3}], "测评图文": [{"运营名字": "吴丽贞", "播放量": 34.8, "发布条数": 2091.0, "上5K条数": 31, "美国占比": 0.7634, "上5K占比": 1.5}, {"运营名字": "蔡晓雪", "播放量": 8.6, "发布条数": 1934.0, "上5K条数": 11, "美国占比": 0.4105, "上5K占比": 0.6}, {"运营名字": "庄惜婷", "播放量": 2.7, "发布条数": 1127.0, "上5K条数": 4, "美国占比": 0.1916, "上5K占比": 0.4}]};
 
 function fmt(n) {
   if (typeof n !== 'number') return n;
   if (Number.isInteger(n)) return n.toLocaleString();
   return n.toFixed(1);
 }
+function fmtPct(v) { return v != null && !isNaN(v) ? v.toFixed(1) : '0.0'; }
 
 function rankRow(item, i) {
   var medal = i === 0 ? ' gold' : i === 1 ? ' silver' : i === 2 ? ' bronze' : '';
-  var stats = '发布' + item['发布条数'] + ' · 过5K' + item['上5K条数'] + ' · ' + item['上5K占比'] + '%';
-  if (item['美国占比'] !== undefined) stats += ' · 美占' + (item['美国占比'] ? (item['美国占比']*100).toFixed(1) : '0.0') + '%';
+  var us = item['美国占比'] ? (item['美国占比']*100).toFixed(1) : '0.0';
+  var stats = '发布' + item['发布条数'] + ' · 过5K' + item['上5K条数'] + ' · ' + fmtPct(item['上5K占比']) + '% · 美占' + us + '%';
   return '<div class="ritem">' +
     '<div class="rn' + medal + '">' + (i+1) + '</div>' +
     '<div class="av">' + item['运营名字'].charAt(0) + '</div>' +
@@ -96,27 +94,20 @@ function makeChart(id, items) {
 }
 
 var app = document.getElementById('app');
-
-var plates = [{'key':'数字人', 'label':'数字人（含无人商超、商超）'}, {'key':'测评图文', 'label':'测评图文'}];
-
-plates.forEach(function(plate) {
+[{'key':'数字人', 'label':'数字人（含无人商超、商超）'}, {'key':'测评图文', 'label':'测评图文'}].forEach(function(plate) {
   var items = DATA[plate.key];
   if (!items || items.length === 0) return;
-  var html = '<div class="section">';
-  html += '<div class="section-title">' + plate.label + '</div>';
-  html += '<div class="card-grid">';
   var sumPlay = items.reduce(function(s,x){return s+x['播放量']}, 0);
   var sumPub = items.reduce(function(s,x){return s+x['发布条数']}, 0);
   var sum5k = items.reduce(function(s,x){return s+x['上5K条数']}, 0);
   var avgUs = items.reduce(function(s,x){return s+(x['美国占比']||0)}, 0) / items.length;
+  var html = '<div class="section"><div class="section-title">' + plate.label + '</div><div class="card-grid">';
   html += '<div class="card"><div class="card-label">播放量（万）</div><div class="card-value">' + fmt(sumPlay) + '</div></div>';
   html += '<div class="card"><div class="card-label">发布条数</div><div class="card-value">' + fmt(sumPub) + '</div></div>';
   html += '<div class="card"><div class="card-label">过5K条数</div><div class="card-value">' + fmt(sum5k) + '</div></div>';
-  html += '<div class="card"><div class="card-label">上5K占比</div><div class="card-value">' + (sumPub ? (sum5k/sumPub*100).toFixed(1) : '0.0') + '%</div></div>';
+  html += '<div class="card"><div class="card-label">上5K占比</div><div class="card-value">' + (sumPub?(sum5k/sumPub*100).toFixed(1):'0.0') + '%</div></div>';
   html += '<div class="card"><div class="card-label">美国占比（均）</div><div class="card-value">' + (avgUs*100).toFixed(1) + '%</div></div>';
-  html += '</div>';
-  html += '<div class="rank-title">运营播放量排行</div><div class="chart-row"><div class="chart-box"><h3>播放量对比（万）</h3><canvas id="ch-' + plate.key + '"></canvas></div><div class="rank-list">' + items.map(function(item,i){return rankRow(item,i)}).join('') + '</div></div>';
-  html += '</div>';
+  html += '</div><div class="rank-title">运营播放量排行</div><div class="chart-row"><div class="chart-box"><h3>播放量对比（万）</h3><canvas id="ch-' + plate.key + '"></canvas></div><div class="rank-list">' + items.map(function(item,i){return rankRow(item,i)}).join('') + '</div></div></div>';
   app.insertAdjacentHTML('beforeend', html);
   makeChart('ch-' + plate.key, items);
 });
