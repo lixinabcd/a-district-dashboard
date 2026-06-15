@@ -3,137 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>6.1-6.14 A区运营看板</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<title>A区运营月累计排行 | 6.1-6.14</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: 'Satoshi', -apple-system, 'Segoe UI', sans-serif; background:#f5f5f5; padding:24px; }
-.container { max-width:1200px; margin:0 auto; }
-h1 { font-size:28px; font-weight:700; margin-bottom:8px; }
-.subtitle { color:#666; font-size:14px; margin-bottom:24px; }
-.section { margin-bottom:40px; }
-.section-title { font-size:22px; font-weight:700; margin-bottom:16px; padding:12px 16px; background:#000; color:#fff; border-radius:16px; }
-.card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:24px; }
-.card { background:#fff; border:1px solid #000; border-radius:16px; padding:16px; box-shadow:2px 2px 0 0 #0a0a0d; }
-.card-label { font-size:12px; color:#666; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px; }
-.card-value { font-size:28px; font-weight:700; }
-.card-value .unit { font-size:14px; font-weight:400; color:#666; }
-.chart-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
-.chart-box { background:#fff; border:1px solid #000; border-radius:16px; padding:16px; box-shadow:2px 2px 0 0 #0a0a0d; }
-.chart-box h3 { font-size:14px; font-weight:700; margin-bottom:12px; }
-.chart-wrap { height:250px; }
-.rank-list { background:#fff; border:1px solid #000; border-radius:16px; padding:16px; box-shadow:2px 2px 0 0 #0a0a0d; }
-.rank-list h3 { font-size:14px; font-weight:700; margin-bottom:12px; }
-.ritem { display:grid; grid-template-columns:32px 32px 1fr 80px 80px; gap:8px; align-items:center; padding:10px 8px; border-bottom:1px solid #eee; }
-.ritem:last-child { border-bottom:none; }
-.rn { width:28px; height:28px; border-radius:50%; background:#eee; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; }
-.rn.gold { background:#fbbf24; }
-.rn.silver { background:#d1d5db; }
-.rn.bronze { background:#f59e0b; }
-.av { width:28px; height:28px; border-radius:50%; background:#a3e635; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; }
-.nm { font-weight:600; font-size:13px; }
-.vl { font-size:13px; font-weight:700; text-align:right; }
-.vl2 { font-size:12px; color:#666; text-align:right; }
-@media (max-width:768px) { .chart-row { grid-template-columns:1fr; } }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f5f0e8;padding:20px;color:#2d2d2d}
+.header{text-align:center;padding:30px 20px;background:#fff;border:4px solid #2d2d2d;box-shadow:8px 8px 0 #2d2d2d;margin-bottom:30px}
+.header h1{font-size:2rem;font-weight:900;letter-spacing:-1px}
+.header .date{font-size:1rem;color:#666;margin-top:8px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:30px}
+.card{background:#fff;border:3px solid #2d2d2d;box-shadow:5px 5px 0 #2d2d2d;padding:20px;text-align:center}
+.card .num{font-size:2rem;font-weight:900;margin-top:6px}
+.card .label{font-size:.8rem;color:#888;font-weight:600}
+.section{margin-bottom:40px}
+.section-title{font-size:1.3rem;font-weight:900;padding:10px 24px;display:inline-block;margin-bottom:16px;color:#fff}
+.rank-table{width:100%;background:#fff;border:3px solid #2d2d2d;box-shadow:5px 5px 0 #2d2d2d;border-collapse:collapse}
+.rank-table th{padding:12px 10px;font-size:.85rem;text-align:center;color:#fff}
+.rank-table td{padding:12px 10px;text-align:center;border-bottom:2px solid #f0f0f0;font-weight:600}
+.rank-table tr:last-child td{border-bottom:none}
+.medal{font-size:1.3rem}
+.rank-1{background:#fffbe6} .rank-2{background:#f8f8f8} .rank-3{background:#fff5e6}
+.chart-wrap{background:#fff;border:3px solid #2d2d2d;box-shadow:5px 5px 0 #2d2d2d;padding:20px;margin-top:20px}
+.footer{text-align:center;padding:20px;color:#aaa;font-size:.8rem}
 </style>
 </head>
 <body>
-<div class="container" id="app">
-<h1>A 区运营月报</h1>
-<p class="subtitle">统计周期：2026.06.01 — 2026.06.14</p>
+
+<div class="header">
+  <h1>A区运营月累计排行</h1>
+  <div class="date">2026.6.1 — 6.14</div>
 </div>
+
+<div class="cards">
+  <div class="card"><div class="label">总播放量（万）</div><div class="num">68.4</div></div>
+  <div class="card"><div class="label">总发布条数</div><div class="num">6576</div></div>
+  <div class="card"><div class="label">上5K总条数</div><div class="num">55</div></div>
+  <div class="card"><div class="label">上5K美国平均占比</div><div class="num">69.2%</div></div>
+  <div class="card"><div class="label">参与运营</div><div class="num">4</div></div>
+</div>
+
+<div id="root"></div>
+
 <script>
-var DATA = [{"label": "数字人板块", "total_play": 29.1, "total_pub": 1357, "total_over5k": 66, "total_opct": 4.86, "total_us": 96.1, "persons": [{"name": "庄惜婷", "play": 19.0, "pub": 437, "over5k": 28, "opct": 6.41, "us": 0}, {"name": "王春燕", "play": 10.1, "pub": 920, "over5k": 38, "opct": 4.13, "us": 96.1}], "writers": [{"name": "小娜", "play": 18.6, "pub": 405, "over5k": 26, "opct": 6.42}, {"name": "林秋利", "play": 10.3, "pub": 716, "over5k": 38, "opct": 5.31}, {"name": "何嘉玲", "play": 0.2, "pub": 236, "over5k": 2, "opct": 0.85}]}, {"label": "测评板块", "total_play": 47.1, "total_pub": 4662, "total_over5k": 47, "total_opct": 1.01, "total_us": 66.38, "persons": [{"name": "吴丽贞", "play": 34.8, "pub": 1807, "over5k": 31, "opct": 1.72, "us": 76.34}, {"name": "蔡晓雪", "play": 8.6, "pub": 1794, "over5k": 11, "opct": 0.61, "us": 35.51}, {"name": "庄惜婷", "play": 3.7, "pub": 1061, "over5k": 5, "opct": 0.47, "us": 0}], "writers": [{"name": "桂环", "play": 47.1, "pub": 4662, "over5k": 47, "opct": 1.01}]}];
+const DATA = {"数字人": [{"运营名字": "庄惜婷", "播放量": 16.2, "发布条数": 500.0, "上5K条数": 6, "美国占比": 0.01, "上5K占比": 1.2}, {"运营名字": "王春燕", "播放量": 6.1, "发布条数": 920.0, "上5K条数": 3, "美国占比": 0.0, "上5K占比": 0.3}], "测评图文": [{"运营名字": "吴丽贞", "播放量": 34.8, "发布条数": 2091.0, "上5K条数": 31, "美国占比": 0.02, "上5K占比": 1.5}, {"运营名字": "蔡晓雪", "播放量": 8.6, "发布条数": 1934.0, "上5K条数": 11, "美国占比": 0.0, "上5K占比": 0.6}, {"运营名字": "庄惜婷", "播放量": 2.7, "发布条数": 1127.0, "上5K条数": 4, "美国占比": 0.0, "上5K占比": 0.4}]};
+const COLORS = {'数字人':{accent:'#f59e0b'},'测评图文':{accent:'#06b6d4'}};
+const MEDALS = ['🥇','🥈','🥉'];
 
-function fmt(v) { return typeof v === 'number' ? v.toLocaleString() : v; }
-
-function buildCards(c) {
-  var colors = ['#fef3c8','#d2fae5','#fae9ff','#f5d1fe','#c8e6fe'];
-  var items = [
-    ['播放量', c.total_play + '万'],
-    ['发布条数', fmt(c.total_pub)],
-    ['上5K条数', fmt(c.total_over5k)],
-    ['上5K占比', c.total_opct + '%'],
-    ['美国占比(均)', c.total_us + '%']
-  ];
-  var h = '';
-  for (var i = 0; i < items.length; i++) {
-    h += '<div class="card" style="background:' + colors[i%colors.length] + '">' +
-      '<div class="card-label">' + items[i][0] + '</div>' +
-      '<div class="card-value">' + items[i][1] + '</div></div>';
-  }
-  return h;
+function render(p) {
+  const d = DATA[p];
+  if (!d||!d.length) return '<div class="section"><p style="padding:20px;background:#fff;border:3px solid #2d2d2d">暂无数据</p></div>';
+  const a = COLORS[p].accent;
+  let rows = '';
+  d.forEach((r,i) => {
+    const m = i<3 ? MEDALS[i] : '#'+(i+1);
+    const c = i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'';
+    const us = r['美国占比'] ? (r['美国占比']*100).toFixed(1) : '0.0';
+    const pct = r['上5K占比']!=null&&!isNaN(r['上5K占比']) ? r['上5K占比'].toFixed(1) : '0.0';
+    rows += '<tr class="'+c+'"><td><span class="medal">'+m+'</span></td><td>'+r['运营名字']+'</td><td>'+r['播放量']+'</td><td>'+r['发布条数']+'</td><td>'+r['上5K条数']+'</td><td>'+pct+'%</td><td>'+us+'%</td></tr>';
+  });
+  return '<div class="section"><div class="section-title" style="background:'+a+'">'+p+'</div><table class="rank-table"><thead><tr style="background:'+a+'"><th>排名</th><th>运营</th><th>播放量(万)</th><th>发布条数</th><th>上5K条数</th><th>上5K占比</th><th>美国占比</th></tr></thead><tbody>'+rows+'</tbody></table><div class="chart-wrap"><canvas id="c-'+p+'" height="200"></canvas></div></div>';
 }
 
-function rankListHtml(items, fields) {
-  var h = '';
-  for (var i = 0; i < items.length; i++) {
-    var medal = i === 0 ? ' gold' : i === 1 ? ' silver' : i === 2 ? ' bronze' : '';
-    h += '<div class="ritem">' +
-      '<div class="rn' + medal + '">' + (i+1) + '</div>' +
-      '<div class="av">' + items[i].name.charAt(0) + '</div>' +
-      '<div class="nm">' + items[i].name + '</div>';
-    for (var f = 0; f < fields.length; f++) {
-      var v = fields[f].fmt ? fields[f].fmt(items[i]) : items[i][fields[f].k];
-      h += '<div class="' + (f===0?'vl':'vl2') + '">' + v + '</div>';
-    }
-    h += '</div>';
-  }
-  return h;
-}
+document.getElementById('root').innerHTML = render('数字人')+render('测评图文');
 
-function render() {
-  var app = document.getElementById('app');
-  for (var s = 0; s < DATA.length; s++) {
-    var sec = DATA[s];
-
-    // 板块标题
-    var secHtml = '<div class="section">' +
-      '<div class="section-title">' + sec.label + '</div>' +
-      '<div class="card-grid">' + buildCards(sec) + '</div>';
-
-    // 运营排行 + 图表
-    secHtml += '<div class="chart-row">' +
-      '<div class="chart-box"><h3>运营 · 播放量对比</h3><div class="chart-wrap"><canvas id="chartBarP' + s + '"></canvas></div></div>' +
-      '<div class="rank-list"><h3>运营 · 排行榜</h3>' +
-      rankListHtml(sec.persons, [
-        {k:'play', fmt:function(x){return x.play+'万'}},
-        {k:'pub', fmt:function(x){return fmt(x.pub)+'条'}},
-        {k:'opct', fmt:function(x){return x.opct+'%'}}
-      ]) + '</div></div>';
-
-    // 文案排行 + 图表
-    secHtml += '<div class="chart-row">' +
-      '<div class="chart-box"><h3>文案 · 播放量对比</h3><div class="chart-wrap"><canvas id="chartBarW' + s + '"></canvas></div></div>' +
-      '<div class="rank-list"><h3>文案 · 排行榜</h3>' +
-      rankListHtml(sec.writers, [
-        {k:'play', fmt:function(x){return x.play+'万'}},
-        {k:'pub', fmt:function(x){return fmt(x.pub)+'条'}},
-        {k:'opct', fmt:function(x){return x.opct+'%'}}
-      ]) + '</div></div></div>';
-
-    app.insertAdjacentHTML('beforeend', secHtml);
-  }
-
-  // 初始化图表
-  for (var s = 0; s < DATA.length; s++) {
-    var sec = DATA[s];
-    var sortedP = sec.persons.slice().sort(function(a,b){return b.play-a.play});
-    new Chart(document.getElementById('chartBarP'+s), {
-      type:'bar',
-      data:{labels:sortedP.map(function(x){return x.name}), datasets:[{data:sortedP.map(function(x){return x.play}), label:'播放量(万)', backgroundColor:'#a3e635', borderColor:'#000', borderWidth:1}]},
-      options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
-    });
-    var sortedW = sec.writers.slice().sort(function(a,b){return b.play-a.play});
-    new Chart(document.getElementById('chartBarW'+s), {
-      type:'bar',
-      data:{labels:sortedW.map(function(x){return x.name}), datasets:[{data:sortedW.map(function(x){return x.play}), label:'播放量(万)', backgroundColor:'#fbbf24', borderColor:'#000', borderWidth:1}]},
-      options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
-    });
-  }
-}
-
-render();
+Object.keys(COLORS).forEach(p => {
+  const d = DATA[p];
+  if(!d||!d.length)return;
+  const a = COLORS[p].accent;
+  new Chart(document.getElementById('c-'+p),{
+    type:'bar',
+    data:{labels:d.map(r=>r['运营名字']),datasets:[
+      {label:'播放量(万)',data:d.map(r=>r['播放量']),backgroundColor:a+'cc',borderColor:a,borderWidth:2,borderRadius:4},
+      {label:'上5K条数',data:d.map(r=>r['上5K条数']),backgroundColor:'#2d2d2d88',borderColor:'#2d2d2d',borderWidth:2,borderRadius:4}
+    ]},
+    options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,grid:{color:'#eee'}}}}
+  });
+});
 </script>
+<div class="footer">数据来源：A区运营表 6.1-6.14 · 自动生成</div>
 </body>
 </html>
